@@ -15,6 +15,7 @@ func SetInstanceNameAndNodeTags(name string, tags map[string]string) {
 	registryGlobal.SetInstanceNameAndNodeTags(name, tags)
 }
 
+// Export reads all current metric data. Expected to be used by exporters.
 func Export() map[string]MetricData {
 	return registryGlobal.Export()
 }

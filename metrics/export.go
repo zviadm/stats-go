@@ -2,18 +2,22 @@ package metrics
 
 import "strings"
 
+// MetricData contains exported data for a single metric.
+// Values in ValueList correspond to tag with the same index.
 type MetricData struct {
 	Type MetricType
 	Tags []string
 	F64s map[ValueList]float64
 }
 
+// ValueList encodes list of values as a single string.
 type ValueList string
 
 const (
 	valueListSep = "|"
 )
 
+// Decode decodes ValueList into list of values.
 func (v ValueList) Decode() []string {
 	return strings.Split(string(v), valueListSep)
 }
