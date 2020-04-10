@@ -11,8 +11,10 @@ import (
 	"github.com/zviadm/stats-go/metrics"
 )
 
-var flagPushFrequency = flag.Duration("stats.datadog.push_frequency", 10*time.Second, "")
-var flagAgentAddr = flag.String("stats.datadog.addr", "127.0.0.1:8125", "")
+var flagPushFrequency = flag.Duration(
+	"stats.datadog.push_frequency", 10*time.Second, "Frequency at which to push stats to DogStatsD daemon.")
+var flagAgentAddr = flag.String(
+	"stats.datadog.addr", "127.0.0.1:8125", "DogStatsD daemon address.")
 
 // ExporterGo starts exporter go routine that exports stats to datadog agent. Exporter will run
 // in the background until context is canceled.
@@ -25,8 +27,8 @@ func ExporterGo(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	_ = instanceName
-	_ = nodeTags
+	c.Tags = []string{"instance:" + instanceName}
+	_ = nodeTags // TODO(zviad): figure out best way to expose node stats in Datadog.
 
 	var exportPrev map[string]metrics.MetricData
 	var cachedTagMap map[string]map[metrics.ValueList][]string
