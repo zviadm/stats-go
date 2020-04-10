@@ -14,10 +14,10 @@ func InstanceNameAndNodeTags() (name string, tags map[string]string) {
 	return registryGlobal.InstanceNameAndNodeTags()
 }
 
-// SetInstanceNameAndNodeTags sets instance name and node tags explicitly. They can also
-// be set using flags.
-func SetInstanceNameAndNodeTags(name string, tags map[string]string) {
-	registryGlobal.SetInstanceNameAndNodeTags(name, tags)
+// SetInstanceName sets instance name. Instance name can also be set using a flag.
+// If flag is set, flag takes the priority and overrides whatever application sets.
+func SetInstanceName(name string) {
+	registryGlobal.SetInstanceName(name)
 }
 
 // Export reads all current metric data. Expected to be used by exporters.

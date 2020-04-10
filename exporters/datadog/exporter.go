@@ -2,13 +2,13 @@ package datadog
 
 import (
 	"context"
-	"errors"
 	"flag"
 	"strings"
 	"time"
 
 	"github.com/DataDog/datadog-go/statsd"
 	"github.com/zviadm/stats-go/metrics"
+	"github.com/zviadm/zlog"
 )
 
 var flagPushFrequency = flag.Duration(
@@ -21,7 +21,8 @@ var flagAgentAddr = flag.String(
 func ExporterGo(ctx context.Context) error {
 	instanceName, nodeTags := metrics.InstanceNameAndNodeTags()
 	if instanceName == "" {
-		return errors.New("instance name must be configured to export stats")
+		zlog.Info("not exporting stats, instance name not configured")
+		return nil
 	}
 	c, err := statsd.New(*flagAgentAddr)
 	if err != nil {

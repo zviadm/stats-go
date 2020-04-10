@@ -38,10 +38,11 @@ func TestExporter(t *testing.T) {
 	require.NoError(t, err)
 	defer cmd.Process.Kill()
 
-	metrics.SetInstanceNameAndNodeTags("exporter_test", nil)
+	metrics.SetInstanceName("exporter_test")
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	ExporterGo(ctx)
+	err = ExporterGo(ctx)
+	require.NoError(t, err)
 
 	c1 := metrics.DefineCounter("exporter_test/c1", metrics.WithTags("tag_one"))
 	g1 := metrics.DefineGauge("exporters_test/g1")

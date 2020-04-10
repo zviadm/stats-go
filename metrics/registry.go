@@ -53,16 +53,15 @@ func (r *registry) InstanceNameAndNodeTags() (name string, tags map[string]strin
 	r.mx.Lock()
 	defer r.mx.Unlock()
 	if !r.initialized {
-		if r.instanceName == "" {
+		if *flagInstanceName != "" {
 			r.instanceName = *flagInstanceName
-			r.nodeTags = parseNodeTags(*flagNodeTags)
 		}
 		r.initialized = true
 	}
 	return r.instanceName, r.nodeTags
 }
 
-func (r *registry) SetInstanceNameAndNodeTags(name string, tags map[string]string) {
+func (r *registry) SetInstanceName(name string) {
 	r.mx.Lock()
 	defer r.mx.Unlock()
 	if r.initialized {
@@ -72,7 +71,6 @@ func (r *registry) SetInstanceNameAndNodeTags(name string, tags map[string]strin
 		panic("name must be set!")
 	}
 	r.instanceName = name
-	r.nodeTags = tags
 }
 
 func parseNodeTags(nodeTags string) map[string]string {
