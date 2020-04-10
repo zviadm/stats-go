@@ -12,7 +12,10 @@ type metric struct {
 	mLen atomic.Int64 // len(m), but can be temporarily out of sync, since there are no locks.
 }
 
-func (m *metric) V(tagsAll ...map[string]string) *atomic.Float64 {
+// KV represents tag key->value mapping.
+type KV map[string]string
+
+func (m *metric) V(tagsAll ...KV) *atomic.Float64 {
 	values := make([]string, 0, len(m.opts.Tags))
 	for _, tag := range m.opts.Tags {
 		var ok bool
@@ -26,7 +29,10 @@ func (m *metric) V(tagsAll ...map[string]string) *atomic.Float64 {
 		values = append(values, v)
 	}
 	// TODO(zviad): Check for missing tags?
-	key := encodeValueList(values)
+	for idx, v := range values {
+		values[idx] = sanitizeTagValue(v)
+	}
+	key := encodeValues(values...)
 	v, ok := m.m.Load(key)
 	if !ok {
 		v = atomic.NewFloat64(0)
@@ -43,9 +49,9 @@ func (m *metric) Export() MetricData {
 		Type: m.opts.Type,
 		Tags: m.opts.Tags,
 	}
-	r.F64s = make(map[string]float64, int(m.mLen.Load()))
+	r.F64s = make(map[ValueList]float64, int(m.mLen.Load()))
 	m.m.Range(func(k, v interface{}) bool {
-		kk := k.(string)
+		kk := k.(ValueList)
 		vv := v.(*atomic.Float64).Load()
 		r.F64s[kk] = vv
 		return true

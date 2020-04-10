@@ -11,7 +11,7 @@ type GaugeMetric struct {
 }
 
 // V creates instance of Counter for given Key->Value tags.
-func (m GaugeMetric) V(tags ...map[string]string) Gauge {
+func (m GaugeMetric) V(tags ...KV) Gauge {
 	return Gauge{v: m.m.V(tags...)}
 }
 

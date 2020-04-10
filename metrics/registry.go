@@ -1,13 +1,9 @@
 package metrics
 
 import (
-	"flag"
 	"fmt"
 	"sync"
 )
-
-var flagInstanceName = flag.String("stats.instance_name", "", "")
-var flagNodeTags = flag.String("stats.node_tags", "", "")
 
 type registry struct {
 	mx           sync.Mutex
@@ -17,30 +13,36 @@ type registry struct {
 	metrics      map[string]*metric
 }
 
-var registryGlobal *registry
-
 func newRegistry() *registry {
 	return &registry{metrics: make(map[string]*metric)}
 }
 
 func (r *registry) DefineCounter(name string, opts ...MetricOption) (CounterMetric, error) {
-	m, err := r.defineMetric(name, counterType, opts...)
+	m, err := r.defineMetric(name, CounterType, opts...)
 	return CounterMetric{m}, err
 }
 func (r *registry) DefineGauge(name string, opts ...MetricOption) (GaugeMetric, error) {
-	m, err := r.defineMetric(name, gaugeType, opts...)
+	m, err := r.defineMetric(name, GaugeType, opts...)
 	return GaugeMetric{m}, err
 }
 
-func (r *registry) defineMetric(name string, t metricType, opts ...MetricOption) (*metric, error) {
+func (r *registry) defineMetric(name string, t MetricType, opts ...MetricOption) (*metric, error) {
 	r.mx.Lock()
 	defer r.mx.Unlock()
 	if _, ok := r.metrics[name]; ok {
 		return nil, fmt.Errorf("metric: %s already defined", name)
 	}
+	if err := validateMetricName(name); err != nil {
+		return nil, err
+	}
 	o := metricOptions{Type: t}
 	for _, opt := range opts {
 		opt(&o)
+	}
+	for _, tag := range o.Tags {
+		if err := validateTagName(tag); err != nil {
+			return nil, err
+		}
 	}
 	m := &metric{opts: o}
 	r.metrics[name] = m
@@ -76,8 +78,4 @@ func (r *registry) SetInstanceNameAndNodeTags(name string, tags map[string]strin
 func parseNodeTags(nodeTags string) map[string]string {
 	r := make(map[string]string)
 	return r
-}
-
-func init() {
-	registryGlobal = newRegistry()
 }

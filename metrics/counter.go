@@ -12,7 +12,7 @@ type CounterMetric struct {
 }
 
 // V creates instance of Counter for given Key->Value tags.
-func (m CounterMetric) V(tags ...map[string]string) Counter {
+func (m CounterMetric) V(tags ...KV) Counter {
 	return Counter{v: m.m.V(tags...)}
 }
 

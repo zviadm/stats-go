@@ -18,7 +18,7 @@ func (v ValueList) Decode() []string {
 	return strings.Split(string(v), valueListSep)
 }
 
-func encodeValues(v []string) ValueList {
+func encodeValues(v ...string) ValueList {
 	return ValueList(strings.Join(v, valueListSep))
 }
 
