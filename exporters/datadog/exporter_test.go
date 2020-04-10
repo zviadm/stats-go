@@ -41,7 +41,7 @@ func TestExporter(t *testing.T) {
 	metrics.SetInstanceNameAndNodeTags("exporter_test", nil)
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	Export(ctx)
+	ExporterGo(ctx)
 
 	c1 := metrics.DefineCounter("exporter_test/c1", metrics.WithTags("tag_one"))
 	g1 := metrics.DefineGauge("exporters_test/g1")

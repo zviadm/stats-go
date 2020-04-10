@@ -14,9 +14,9 @@ import (
 var flagPushFrequency = flag.Duration("stats.datadog.push_frequency", 10*time.Second, "")
 var flagAgentAddr = flag.String("stats.datadog.addr", "127.0.0.1:8125", "")
 
-// Export starts exporter to datadog agent. Exporter will run in the background until
-// context is canceled.
-func Export(ctx context.Context) error {
+// ExporterGo starts exporter go routine that exports stats to datadog agent. Exporter will run
+// in the background until context is canceled.
+func ExporterGo(ctx context.Context) error {
 	instanceName, nodeTags := metrics.InstanceNameAndNodeTags()
 	if instanceName == "" {
 		return errors.New("instance name must be configured to export stats")
