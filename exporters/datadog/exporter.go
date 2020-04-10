@@ -40,15 +40,18 @@ func Export(ctx context.Context) error {
 			case <-ticker.C:
 			}
 			export := metrics.Export()
-			tagMap := make(map[string]map[metrics.ValueList][]string, len(cachedTagMap))
 			for name, mData := range export {
 				mDataPrev := exportPrev[name]
+				if cachedTagMap[name] == nil {
+					cachedTagMap[name] = make(
+						map[metrics.ValueList][]string, len(mData.F64s))
+				}
 				nameDD := strings.ReplaceAll(name, "/", ".")
 				switch mData.Type {
 				case metrics.CounterType, metrics.GaugeType:
 					for vList, v := range mData.F64s {
 						tags := cacheDatadogTags(
-							tagMap, name, mData.Tags, vList, cachedTagMap[name])
+							cachedTagMap[name], mData.Tags, vList)
 						switch mData.Type {
 						case metrics.CounterType:
 							vDelta := v - mDataPrev.F64s[vList]
@@ -62,29 +65,35 @@ func Export(ctx context.Context) error {
 				}
 			}
 			exportPrev = export
-			cachedTagMap = tagMap
+
+			// Clear out not longer reporting entries from cachedTagMap.
+			for name, cachedMap := range cachedTagMap {
+				mData, ok := export[name]
+				if !ok {
+					delete(cachedTagMap, name)
+					continue
+				}
+				for vList := range cachedMap {
+					_, ok := mData.F64s[vList]
+					if !ok {
+						delete(cachedMap, vList)
+						continue
+					}
+				}
+			}
 		}
 	}()
 	return nil
 }
 
 func cacheDatadogTags(
-	tagMap map[string]map[metrics.ValueList][]string,
-	name string,
+	cachedMap map[metrics.ValueList][]string,
 	tagNames []string,
-	vList metrics.ValueList,
-	cachedMap map[metrics.ValueList][]string) []string {
-	tags, ok := tagMap[name][vList]
+	vList metrics.ValueList) []string {
+	tags, ok := cachedMap[vList]
 	if !ok {
-		tags, ok = cachedMap[vList]
-		if !ok {
-			tags = encodeDatadogTags(tagNames, vList.Decode())
-		}
-
-		if tagMap[name] == nil {
-			tagMap[name] = make(map[metrics.ValueList][]string, len(cachedMap))
-		}
-		tagMap[name][vList] = tags
+		tags = encodeDatadogTags(tagNames, vList.Decode())
+		cachedMap[vList] = tags
 	}
 	return tags
 }
