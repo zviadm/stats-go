@@ -32,7 +32,7 @@ func ExporterGo(ctx context.Context) error {
 	_ = nodeTags // TODO(zviad): figure out best way to expose node stats in Datadog.
 
 	var exportPrev map[string]metrics.MetricData
-	var cachedTagMap map[string]map[metrics.ValueList][]string
+	cachedTagMap := make(map[string]map[metrics.ValueList][]string)
 	go func() {
 		ticker := time.NewTicker(*flagPushFrequency)
 		defer ticker.Stop()
