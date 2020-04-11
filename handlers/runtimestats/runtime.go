@@ -49,5 +49,5 @@ func collect() {
 }
 
 func init() {
-
+	go collect()
 }
