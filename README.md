@@ -1,7 +1,7 @@
-# Stats-Go - Yet another library for logging metrics.
+# Stats-Go - Yet another library for metrics instrumentation.
 
 In spirit, this library has similar goals as [opencensus-go](https://github.com/census-instrumentation/opencensus-go) but
-with way less features and way less code overall. It is most similar to
+with way less features and way less code overall. This library is most similar to
 [client_golang/prometheus](https://github.com/prometheus/client_golang), but with a different approach on stats collection.
 
 Stats-Go is made up of few separate GO modules:
