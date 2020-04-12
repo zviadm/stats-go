@@ -1,0 +1,13 @@
+language: go
+
+go:
+  - 1.14
+
+services:
+  - docker
+
+install:
+  - go install github.com/zviadm/tt/tt
+
+script:
+  - tt -v -race ./...

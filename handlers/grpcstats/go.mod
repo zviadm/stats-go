@@ -1,4 +1,4 @@
-module github.com/zviadm/stats-go/handlers/grpc
+module github.com/zviadm/stats-go/handlers/grpcstats
 
 go 1.14
 
