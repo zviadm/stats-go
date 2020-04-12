@@ -1,4 +1,5 @@
 # Stats-Go - Yet another library for metrics instrumentation.
+[![Build Status](https://travis-ci.com/zviadm/stats-go.svg?branch=master)](https://travis-ci.com/zviadm/stats-go)
 
 In spirit, this library has similar goals as [opencensus-go](https://github.com/census-instrumentation/opencensus-go) but
 with way less features and way less code overall. This library is most similar to
