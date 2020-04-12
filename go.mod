@@ -1,4 +1,4 @@
-module github.com/zviadm/stats-go/metrics
+module github.com/zviadm/stats-go
 
 go 1.14
 
