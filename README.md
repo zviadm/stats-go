@@ -10,5 +10,5 @@ Stats-Go is made up of few separate GO modules:
 to allow instrumenting even hot code paths without much worry about additional cpu utilization or memory allocations.
 APIs for instrumenting the code are not expected to change in backwards incompatible ways, even in experimental phase.
 - [exporters](./exporters): Provides GO modules for exporting collected metrics to different potential backends.
-- [handlers](./handlers): Provides various separate GO modules to help instrument core common libraries. These libraries
+- [handlers](./handlers): Provides various separate libraries to help instrument core common libraries. These libraries
 are in iteration phase, thus they might change pretty substantially.
