@@ -11,6 +11,3 @@ APIs for instrumenting the code are not expected to change in backwards incompat
 - [exporters](./exporters): Provides GO modules for exporting collected metrics to different potential backends.
 - [handlers](./handlers): Provides various separate GO modules to help instrument core common libraries. These libraries
 are in iteration phase, thus they might change pretty substantially.
-
-## Metrics
-

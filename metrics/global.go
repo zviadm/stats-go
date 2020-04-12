@@ -1,3 +1,4 @@
+// Package metrics provides APIs for instrumenting code.
 package metrics
 
 import "flag"

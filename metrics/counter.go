@@ -5,8 +5,8 @@ import (
 )
 
 // CounterMetric represents definition for a counter metric. Counters measure
-// total count of events/operations/throughput/etc... in a time range. Counters can
-// measure total negative count too.
+// total count of events/operations/throughput/etc in a time range. Counters can
+// measure negative counts too.
 type CounterMetric struct {
 	m *metric
 }
@@ -16,7 +16,9 @@ func (m CounterMetric) V(tags ...KV) Counter {
 	return Counter{v: m.m.V(tags...)}
 }
 
-// DefineCounter defines new counter metric.
+// DefineCounter defines new counter metric. By convention, DefineCounter calls are
+// expected to happen at import time, and all metrics exported by a package to be defined
+// in a single `stats.go` file.
 func DefineCounter(name string, opts ...MetricOption) CounterMetric {
 	c, err := registryGlobal.DefineCounter(name, opts...)
 	if err != nil {

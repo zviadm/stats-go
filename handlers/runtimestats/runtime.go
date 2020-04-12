@@ -19,12 +19,27 @@ const (
 )
 
 var (
-	mallocsC    = metrics.DefineCounter("runtime/go/mallocs").V()
-	freesC      = metrics.DefineCounter("runtime/go/frees").V()
-	allocBytesC = metrics.DefineCounter("runtime/go/alloc_bytes").V()
+	mallocsC = metrics.DefineCounter(
+		"runtime/go/mallocs",
+		metrics.WithDesc("Rate of heap object allocations."),
+	).V()
+	freesC = metrics.DefineCounter(
+		"runtime/go/frees",
+		metrics.WithDesc("Rate of heap object frees."),
+	).V()
+	allocBytesC = metrics.DefineCounter(
+		"runtime/go/alloc_bytes",
+		metrics.WithDesc("Rate of heap object allocations in bytes."),
+	).V()
 
-	cgoCallsC   = metrics.DefineCounter("runtime/go/cgo_calls").V()
-	goroutinesG = metrics.DefineGauge("runtime/go/goroutines").V()
+	cgoCallsC = metrics.DefineCounter(
+		"runtime/go/cgo_calls",
+		metrics.WithDesc("Rate of CGO calls."),
+	).V()
+	goroutinesG = metrics.DefineGauge(
+		"runtime/go/goroutines",
+		metrics.WithDesc("Currently existing GO routines."),
+	).V()
 )
 
 func collect() {
