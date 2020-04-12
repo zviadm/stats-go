@@ -1,3 +1,4 @@
+// Package datadog provides exporter to export collected metrics to DataDog agent.
 package datadog
 
 import (
@@ -18,6 +19,7 @@ var flagAgentAddr = flag.String(
 
 // ExporterGo starts exporter go routine that exports stats to datadog agent. Exporter will run
 // in the background until context is canceled.
+// To match naming convention in DataDog, "/"-s are replaced with "."-s in metric names.
 func ExporterGo(ctx context.Context) error {
 	instanceName, nodeTags := metrics.InstanceNameAndNodeTags()
 	if instanceName == "" {

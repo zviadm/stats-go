@@ -1,3 +1,4 @@
+// Package grpcstats provides gRPC stats.Handler implementations.
 package grpcstats
 
 import "github.com/zviadm/stats-go/metrics"
@@ -10,7 +11,4 @@ var (
 		"grpc/server/requests",
 		metrics.WithTags("method", "code"),
 	)
-
-	// connectionsClientG = metrics.DefineGauge("grpc/client/connetions").V()
-	// connectsClientG    = metrics.DefineCounter("grpc/client/connects").V()
 )

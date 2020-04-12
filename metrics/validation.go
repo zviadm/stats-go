@@ -36,6 +36,7 @@ func validateTagName(tag string) error {
 }
 
 func sanitizeTagValue(value string) string {
-	// TODO(zviad):
+	// TODO(zviadm): sanitize tag values to replace unsupported characters and reduce
+	// its size if it is too large.
 	return value
 }
