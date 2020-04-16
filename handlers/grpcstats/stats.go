@@ -7,15 +7,20 @@ var (
 	serverConnectionsG = metrics.DefineGauge(
 		"grpc/server/connetions",
 		metrics.WithDesc("Currently established GRPC connections."),
-	).V()
+	).V(nil)
 	serverConnectsC = metrics.DefineCounter(
 		"grpc/server/connects",
 		metrics.WithDesc("Rate of GRPC connects."),
-	).V()
+	).V(nil)
 
 	serverRequestsCounter = metrics.DefineCounter(
 		"grpc/server/requests",
 		metrics.WithDesc("Rate of GRPC requests."),
 		metrics.WithTags("method", "code"),
+	)
+	serverRequestsInflightGauge = metrics.DefineGauge(
+		"grpc/server/requests_inflight",
+		metrics.WithDesc("GRPC requests currently inflight."),
+		metrics.WithTags("method"),
 	)
 )

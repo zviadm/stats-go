@@ -1,6 +1,7 @@
 package metrics
 
 import (
+	"strings"
 	"sync"
 
 	"go.uber.org/atomic"
@@ -15,24 +16,24 @@ type metric struct {
 // KV represents tag key->value mapping.
 type KV map[string]string
 
-func (m *metric) V(tagsAll ...KV) *atomic.Float64 {
-	values := make([]string, 0, len(m.opts.Tags))
-	for _, tag := range m.opts.Tags {
-		var ok bool
-		var v string
-		for idx := len(tagsAll) - 1; idx >= 0; idx-- {
-			v, ok = tagsAll[idx][tag]
-			if ok {
-				break
-			}
+func (m *metric) V(tags KV) *atomic.Float64 {
+	maxKeyLen := len(m.opts.Tags)
+	for _, v := range tags {
+		maxKeyLen += len(v)
+	}
+	b := strings.Builder{}
+	b.Grow(maxKeyLen)
+	for idx, tag := range m.opts.Tags {
+		v := tags[tag]
+		v = sanitizeTagValue(v)
+		b.WriteString(v)
+		if idx < len(m.opts.Tags)-1 {
+			b.WriteByte(valueListSep)
 		}
-		values = append(values, v)
 	}
+	key := ValueList(b.String())
 	// TODO(zviad): Check for missing tags?
-	for idx, v := range values {
-		values[idx] = sanitizeTagValue(v)
-	}
-	key := encodeValues(values...)
+
 	v, ok := m.m.Load(key)
 	if !ok {
 		v = atomic.NewFloat64(0)

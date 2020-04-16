@@ -21,13 +21,13 @@ func TestRegistry(t *testing.T) {
 	require.EqualValues(t, CounterType, export["stats/test/c1"].Type)
 	c1v := export["stats/test/c1"].F64s
 	require.Len(t, c1v, 3)
-	require.EqualValues(t, 4, c1v[encodeValues("t3")])
+	require.EqualValues(t, 4, c1v["t3"])
 
 	g1, err := reg.DefineGauge("stats/test/g1")
 	require.NoError(t, err)
-	g1.V().Set(1)
-	g1.V().Add(1)
-	require.EqualValues(t, 2, g1.V().Get())
+	g1.V(nil).Set(1)
+	g1.V(nil).Add(1)
+	require.EqualValues(t, 2, g1.V(nil).Get())
 
 	export = reg.Export()
 	require.Len(t, export, 2)

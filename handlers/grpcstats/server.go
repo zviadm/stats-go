@@ -20,9 +20,18 @@ type ctxRpcTagInfo struct{}
 
 var rpcTagInfoKey = ctxRpcTagInfo{}
 
+type rpcInfo struct {
+	FullMethodName string
+	inflightG      metrics.Gauge
+}
+
 func (h *serverHandler) TagRPC(
 	ctx context.Context, info *stats.RPCTagInfo) context.Context {
-	return context.WithValue(ctx, rpcTagInfoKey, info)
+	i := &rpcInfo{
+		FullMethodName: info.FullMethodName,
+		inflightG:      serverRequestsInflightGauge.V(metrics.KV{"method": info.FullMethodName}),
+	}
+	return context.WithValue(ctx, rpcTagInfoKey, i)
 }
 
 func (h *serverHandler) HandleRPC(ctx context.Context, s stats.RPCStats) {
@@ -30,8 +39,12 @@ func (h *serverHandler) HandleRPC(ctx context.Context, s stats.RPCStats) {
 		return
 	}
 	switch s := s.(type) {
+	case *stats.Begin:
+		info := ctx.Value(rpcTagInfoKey).(*rpcInfo)
+		info.inflightG.Add(1)
 	case *stats.End:
-		info := ctx.Value(rpcTagInfoKey).(*stats.RPCTagInfo)
+		info := ctx.Value(rpcTagInfoKey).(*rpcInfo)
+		info.inflightG.Add(-1)
 		serverRequestsCounter.V(metrics.KV{
 			"method": info.FullMethodName,
 			"code":   strconv.Itoa(int(status.Convert(s.Error).Code())),

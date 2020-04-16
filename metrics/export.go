@@ -14,16 +14,13 @@ type MetricData struct {
 type ValueList string
 
 const (
-	valueListSep = "|"
+	valueListSep  = '|'
+	valueListSepS = string(valueListSep)
 )
 
 // Decode decodes ValueList into list of values.
 func (v ValueList) Decode() []string {
-	return strings.Split(string(v), valueListSep)
-}
-
-func encodeValues(v ...string) ValueList {
-	return ValueList(strings.Join(v, valueListSep))
+	return strings.Split(string(v), valueListSepS)
 }
 
 func (r *registry) Export() map[string]MetricData {

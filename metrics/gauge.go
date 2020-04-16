@@ -11,8 +11,8 @@ type GaugeMetric struct {
 }
 
 // V creates instance of Gauge for given Key->Value tags.
-func (m GaugeMetric) V(tags ...KV) Gauge {
-	return Gauge{v: m.m.V(tags...)}
+func (m GaugeMetric) V(tags KV) Gauge {
+	return Gauge{v: m.m.V(tags)}
 }
 
 // DefineGauge defines new gauge metric. By convention, DefineGauge calls are

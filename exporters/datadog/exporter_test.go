@@ -49,7 +49,7 @@ func TestExporter(t *testing.T) {
 
 	for idx := 0; idx < 3; idx++ {
 		c1.V(metrics.KV{"tag_one": "t1"}).Count(float64(idx))
-		g1.V().Set(float64(idx))
+		g1.V(nil).Set(float64(idx))
 		time.Sleep(*flagPushFrequency)
 	}
 	cmd.Process.Signal(syscall.SIGTERM)

@@ -6,7 +6,7 @@ import "flag"
 var flagInstanceName = flag.String("stats.instance_name", "", "")
 var flagNodeTags = flag.String("stats.node_tags", "", "")
 
-var registryGlobal *registry
+var registryGlobal *registry = newRegistry()
 
 // InstanceNameAndNodeTags returns instance name and node tags. Instance name and
 // node tags can not change after first call to this function. Thus after first call
@@ -24,8 +24,4 @@ func SetInstanceName(name string) {
 // Export reads all current metric data. Expected to be used by exporters.
 func Export() map[string]MetricData {
 	return registryGlobal.Export()
-}
-
-func init() {
-	registryGlobal = newRegistry()
 }
